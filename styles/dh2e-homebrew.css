@@ -1,0 +1,14 @@
+.dark-heresy .item-list {
+  .header {
+    padding-right: 10px;
+  
+    .skill-action {
+      flex-grow: 1;
+      font-size: 12px;
+      line-height: 16px;
+    }
+  }
+  .items .skill .skill-context-menu {
+    margin-right: 5px;
+  }
+}
