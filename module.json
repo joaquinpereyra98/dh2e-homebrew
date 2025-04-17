@@ -21,7 +21,16 @@
   "readme": "README.md",
   "socket": true,
   "relationships": {
-    "requires": [],
+    "systems": [
+      {
+        "id": "dark-heresy",
+        "manifest": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT/releases/download/4.3.2/system.json",
+        "compatibility": {
+          "minimum": "4.3.0",
+          "verified": "4.3.2"
+        }
+      }
+    ],
     "recommends": []
   },
   "esmodules": [

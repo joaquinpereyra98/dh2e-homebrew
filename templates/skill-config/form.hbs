@@ -1,0 +1,15 @@
+<div class="config-container">
+  <div class="config-content standard-form">
+    {{#each fields as |field|}}
+      {{{field}}}
+    {{/each}}
+  </div>
+  <footer class="form-footer flexrow">
+    <button type="button" data-action="cancel">
+      <span>Cancel</span>
+    </button>
+    <button type="button" data-action="confirm">
+      <span>Create {{ifThen skillData.isSpecialist "specialty" "Skill"}}</span>
+    </button>
+  </footer>
+</div>

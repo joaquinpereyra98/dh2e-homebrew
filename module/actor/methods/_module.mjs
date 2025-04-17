@@ -1,0 +1,1 @@
+export { default as createSkill } from './create-skill-method.mjs';
