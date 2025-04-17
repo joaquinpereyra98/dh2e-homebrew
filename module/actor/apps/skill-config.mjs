@@ -1,12 +1,15 @@
 import MODULE_CONST from "../../constants.mjs";
 
+/**
+ * @typedef {import('../../constants.mjs').SkillData} SkillData
+ */
+
 const { fields, elements, api } = foundry.applications;
 
 export default class SkillConfig extends api.HandlebarsApplicationMixin(api.ApplicationV2) {
   constructor(options) {
     foundry.utils.setProperty(options, "window.title", options.title ?? "");
     super(options);
-
     this._actor = options.actor;
     this._skillData = options.skillData;
     this._type = options.type;
@@ -25,7 +28,7 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
     form: {
       closeOnSubmit: false,
       submitOnChange: true,
-      handler: SkillConfig.#formHandler
+      handler: SkillConfig._formHandler
     },
     position: {
       width: 400,
@@ -49,28 +52,62 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
     }
   }
 
+  static async create(options) {
+    const app = new SkillConfig(options);
+    await app.render({ force: true });
+    return await app.dataPrepared;
+  }
+
   /* -------------------------------------------- */
   /*  Accessors                                   */
   /* -------------------------------------------- */
+
+  /**
+   * @type {foundry.documents.BaseActor}
+   * @private
+   */
+  _actor;
 
   get actor() {
     return this._actor;
   }
 
+  /**
+   * @type {SkillData}
+   * @private
+   */
+  _skillData;
+
   get skillData() {
     return this._skillData;
   }
+
+   /**
+   * @type {String}
+   * @private
+   */
+   _type;
 
   get type() {
     return this._type;
   }
 
+  get isSpecialty() {
+    return !!this.skillData.specialty
+  }
 
+  get isSpecialist() {
+    return this.type === MODULE_CONST.CONFIG_TYPES.SPECIALIST;
+  }
+
+  get isSkill() {
+    return this.type === MODULE_CONST.CONFIG_TYPES.SKILL;
+  }
   /* -------------------------------------------- */
   /*  Form Handler                                */
   /* -------------------------------------------- */
 
-  static #formHandler(event, form, formData) {
+  static _formHandler(_,__, formData) {
     const submitData = this.prepareSubmitData(formData);
     foundry.utils.mergeObject(this._skillData, submitData);
     this.render()
@@ -78,7 +115,7 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
 
   prepareSubmitData(formData) {
     const submitData = foundry.utils.expandObject(formData.object);
-    if(!Array.isArray(submitData.characteristics)) submitData.characteristics = [submitData.characteristics]
+    if (!Array.isArray(submitData.characteristics)) submitData.characteristics = [submitData.characteristics];
     return submitData;
   }
 
@@ -89,7 +126,7 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
   _onRender(context, options) {
     super._onRender(context, options);
     const stringTagsElement = this.element.querySelector("string-tags");
-    if(stringTagsElement) {
+    if (stringTagsElement) {
       const addTagButton = stringTagsElement.querySelector(".icon.fa-solid.fa-tag");
       if (addTagButton) {
         addTagButton.classList.replace("fa-tag", "fa-plus");
@@ -112,8 +149,13 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
     };
 
     switch (this.type) {
-      case "skill":
-        context.fields = await this._prepareSkillFields()
+      case MODULE_CONST.CONFIG_TYPES.SKILL:
+        context.fields = this._prepareSkillFields();
+        context.buttonLabel = "Create Skill";
+        break;
+      case MODULE_CONST.CONFIG_TYPES.SPECIALIST:
+        context.fields = this._prepareCommonFields();
+        context.buttonLabel = "Create Specialist";
         break;
 
       default:
@@ -123,14 +165,14 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
     return context;
   }
 
-  async __prepareCommonFields() {
+  _prepareCommonFields() {
     const labelFormGroup = fields.createFormGroup({
       input: fields.createTextInput({
         name: 'label',
-        placeholder: "New Skill Name",
+        placeholder: `New ${this.isSkill ? "Skill" : "Specialist"} Name`,
         value: this.skillData.label
       }),
-      label: "Skill Name",
+      label: `${this.isSkill ? "Skill" : "Specialist"} Name`,
     }).outerHTML;
 
     const characteristicsFormGroup = fields.createFormGroup({
@@ -146,6 +188,26 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
       label: "Characteristics",
     }).outerHTML;
 
+    const aptitudesFormGroup = fields.createFormGroup({
+      input: elements.HTMLStringTagsElement.create({
+        value: this.skillData.aptitudes,
+        name: "aptitudes",
+        disabled: this.isSpecialty,
+        dataset: this.isSpecialtyy ? {
+          tooltip: "Specialties cannot have their own aptitudes"
+        } : {},
+      }),
+      label: "Aptitudes",
+    }).outerHTML;
+
+    return {
+      labelFormGroup,
+      characteristicsFormGroup,
+      aptitudesFormGroup,
+    }
+  }
+
+  _prepareSkillFields() {
     const advanceFormGroup = fields.createFormGroup({
       input: fields.createSelectInput({
         name: 'advance',
@@ -164,23 +226,6 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
       label: "Advance",
     }).outerHTML;
 
-    const aptitudesFormGroup = fields.createFormGroup({
-      input: elements.HTMLStringTagsElement.create({
-        value: this.skillData.aptitudes,
-        name: "aptitudes",
-      }),
-      label: "Aptitudes",
-    }).outerHTML;
-
-    return {
-      labelFormGroup,
-      characteristicsFormGroup,
-      advanceFormGroup,
-      aptitudesFormGroup,
-    }
-  }
-
-  async _prepareSkillFields() {
     const specialitiesOptions = [
       {
         value: "",
@@ -208,9 +253,10 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
 
 
     return foundry.utils.mergeObject(
-      await this.__prepareCommonFields(),
+      this._prepareCommonFields({ type: "skill" }),
       {
-        specialistFormGroup
+        advanceFormGroup,
+        specialistFormGroup,
       }
     )
   }
@@ -222,8 +268,8 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
 
   static async confirm() {
     const formData = new FormDataExtended(this.element);
-    const submitData = this.prepareSubmitData(formData);
-    if(!submitData.label) delete submitData.label;
+    const submitData = foundry.utils.mergeObject(this.skillData, this.prepareSubmitData(formData), {inplace: false});;
+    if (!submitData.label) delete submitData.label;
     this._resolvePrepared(submitData);
     await this.close();
   }

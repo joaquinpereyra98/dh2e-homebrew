@@ -6,11 +6,21 @@
       flex-grow: 1;
       font-size: 12px;
       line-height: 16px;
+      #context-menu {
+        right: 100%;
+        left: auto;
+        cursor: pointer;
+      }
     }
   }
 
-  .items .skill .skill-context-menu {
+  .items .skill .dhe2e-skill-actions {
     margin-right: 5px;
+    #context-menu {
+      right: 100%;
+      left: auto;
+      cursor: pointer;
+    }
   }
 }
 
