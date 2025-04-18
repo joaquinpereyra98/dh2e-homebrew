@@ -75,20 +75,20 @@ async function _editSpecialization(skillKey, specializationKey) {
 
   const skill = foundry.utils.duplicate(this.skills[skillKey]);
 
-  const specialization = skill.specialities?.[specializationKey];
+  const specialization = foundry.utils.duplicate(skill.specialities?.[specializationKey]);
 
   if (!specialization) {
     console.log(`Specialization "${specializationKey}" was not found in the skill "${game.i18n.localize(skill.label)}".`);
     return null;
   }
 
-  foundry.utils.mergeObject(specialization, defaultGeneralSkill, { overwrite: false });
-  specialization.specialty = skillKey;
-  specialization.key = specializationKey;
+  const specializationData = foundry.utils.mergeObject(specialization, defaultSpecialization, { overwrite: false, inplace: false });
+  specializationData.specialty = skillKey;
+  specializationData.key = specializationKey;
 
   const editedSkill = await SkillConfig.create({
     actor: this,
-    skillData: specialization,
+    skillData: specializationData,
     title: `Edit ${game.i18n.localize(skill.label)} Skill`,
     type: CONFIG_TYPES.EDIT_SKILL
   });

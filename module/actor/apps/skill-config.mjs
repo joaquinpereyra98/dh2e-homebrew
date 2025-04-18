@@ -205,6 +205,7 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
       label: `${this.isSkill ? "Skill" : "Specialist"} Name`,
     }).outerHTML;
 
+    console.log(this.skillData.characteristics[0]);
     const characteristicsFormGroup = fields.createFormGroup({
       input: fields.createSelectInput({
         name: 'characteristics',
