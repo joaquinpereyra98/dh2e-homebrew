@@ -43,7 +43,9 @@ function appendSkillAnchor(app, skillsDiv){
       {
         name: "Delete Skill",
         icon: '<i class="fa-solid fa-trash"></i>',
-        callback: () => { console.log("click")},
+        callback: () => app.actor.update({
+          [`system.skills.-=${skillKey}`]: null,
+        }),
         condition: !getCoreSkills().generalSkill.has(skillKey)
       }
     ], {eventName: "click"});
@@ -104,7 +106,9 @@ function appendSpecializationAnchor(app, skillsDiv) {
       {
         name: "Delete Skill",
         icon: '<i class="fa-solid fa-trash"></i>',
-        callback: () => { console.log("click")},
+        callback: () => app.actor.update({
+          [`system.skills.${skillKey}.-=${specializationKey}`]: null,
+        }),
         condition: !getCoreSkills().specialistSkills.get(skillKey)?.specialities[specializationKey],
       }
     ], {eventName: "click"});
