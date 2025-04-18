@@ -14,12 +14,15 @@
     }
   }
 
-  .items .skill .dhe2e-skill-actions {
+  .items .dhe2e-skill-actions {
     margin-right: 5px;
     #context-menu {
       right: 100%;
       left: auto;
       cursor: pointer;
+      i {
+        font-size: 12px;
+      }
     }
   }
 }

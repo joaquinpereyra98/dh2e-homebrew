@@ -11,6 +11,7 @@ MODULE_CONST.PATHS.TEMPLATES = `${MODULE_CONST.PATHS.MODULE}/templates`;
 MODULE_CONST.CONFIG_TYPES = {
   SKILL: "skill",
   SPECIALIST: "specialist",
+  EDIT_SKILL: "editSkill",
 }
 
 /*------------------------------------------------------ */
@@ -46,6 +47,7 @@ MODULE_CONST.defaultSkillData = {
  * 
  * @typedef {Object} GeneralSkill
  * @property {string} label - The display label or localization key.
+ * @property {string} key - The key of the Skill.
  * @property {string[]} characteristics - Characteristics associated with this skill.
  * @property {number} advance - The skill's advancement level.
  * @property {boolean} isSpecialist - Always false for general skills.
@@ -58,6 +60,7 @@ MODULE_CONST.defaultSkillData = {
 /**@type {GeneralSkill} */
 MODULE_CONST.defaultGeneralSkill = {
   label: "New Skill",
+  key: "",
   characteristics: ["WS"],
   advance: -20,
   isSpecialist: false,
@@ -72,6 +75,7 @@ MODULE_CONST.defaultGeneralSkill = {
  * 
  * @typedef {Object} SpecialistSkill
  * @property {string} label - The display label or localization key.
+ * @property {string} key - The key of the Skill.
  * @property {string[]} characteristics - Characteristics associated with this skill.
  * @property {number} advance - The base advancement level for the skill.
  * @property {boolean} isSpecialist - Always true for specialist skills.
@@ -84,6 +88,7 @@ MODULE_CONST.defaultGeneralSkill = {
 /**@type {SpecialistSkill} */
 MODULE_CONST.defaultSpecialistSkill = {
   label: "New Specialty",
+  key: "",
   characteristics: ["WS"],
   advance: -20,
   isSpecialist: true,
@@ -98,19 +103,23 @@ MODULE_CONST.defaultSpecialistSkill = {
  * 
  * @typedef {Object} Specialization
  * @property {string} label - Display name or localization key of the specialization.
+ * @property {string} key - The key of the Skill.
  * @property {number} advance - The advancement level specific to this specialization.
  * @property {boolean} starter - Whether this specialization is available at character start.
  * @property {number} cost - XP cost or similar for acquiring this specialization.
+ * @property {string[]} characteristics - Characteristics associated with this skill.
  */
 
 /**@type {Specialization} */
 MODULE_CONST.defaultSpecialization = {
   label: "New Specialization",
+  key: "",
   advance: -20,
   starter: false,
   cost: 0,
+  characteristics: [""],
 }
 
-Object.freeze(MODULE_CONST);
 
+Object.freeze(MODULE_CONST);
 export default MODULE_CONST;

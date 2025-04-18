@@ -27,3 +27,11 @@ export function generateKey(baseKey, keys) {
 
   return finalKey;
 }
+
+export function getCoreSkills() {
+  const skills = foundry.utils.duplicate(Object.entries(game.system.template.Actor.acolyte.skills));
+  return {
+    generalSkill: new foundry.utils.Collection(skills.filter(([_, value]) => !value.isSpecialist)),
+    specialistSkills: new foundry.utils.Collection(skills.filter(([_, value]) => value.isSpecialist))
+  }
+}
