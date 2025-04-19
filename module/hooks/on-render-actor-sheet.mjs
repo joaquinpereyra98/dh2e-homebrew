@@ -15,11 +15,12 @@ export default function onRenderActorSheet(app, [html], data) {
   createHeaderButton(app, header)
   appendSkillAnchor(app, skillsDiv);
   appendSpecializationAnchor(app, skillsDiv);
+  appendSpecialistAnchor(app, skillsDiv);
 }
 
-function appendSkillAnchor(app, skillsDiv){
+function appendSkillAnchor(app, skillsDiv) {
   const skillsItems = skillsDiv.querySelectorAll(".items .skill.item");
-  for(const skillItem of skillsItems) {
+  for (const skillItem of skillsItems) {
     const actionsB = document.createElement("b");
     actionsB.className = "dhe2e-skill-actions";
 
@@ -37,7 +38,7 @@ function appendSkillAnchor(app, skillsDiv){
         name: "Edit Skill",
         icon: '<i class="fa-solid fa-pen-to-square"></i>',
         callback: () => {
-          app.actor.editSkill({skillKey});
+          app.actor.editSkill({ skillKey });
         },
       },
       {
@@ -48,7 +49,7 @@ function appendSkillAnchor(app, skillsDiv){
         }),
         condition: !getCoreSkills().generalSkill.has(skillKey)
       }
-    ], {eventName: "click"});
+    ], { eventName: "click" });
   }
 
 }
@@ -68,20 +69,20 @@ function createHeaderButton(app, header) {
     {
       name: "Create New Skill",
       icon: '<i class="fa-solid fa-plus"></i>',
-      callback: () => { app.actor.createSkill()},
+      callback: () => { app.actor.createSkill() },
     },
     {
       name: "Create New Speciality",
       icon: '<i class="fa-solid fa-plus"></i>',
-      callback: () => { console.log("click")},
+      callback: () => { app.actor.createSpecialist() },
     }
-  ], {eventName: "click"});
+  ], { eventName: "click" });
 }
 
 function appendSpecializationAnchor(app, skillsDiv) {
   const skillsItems = skillsDiv.querySelectorAll(".items .speciality.item");
 
-  for(const skillItem of skillsItems) {
+  for (const skillItem of skillsItems) {
     const actionsB = document.createElement("b");
     actionsB.className = "dhe2e-skill-actions";
 
@@ -91,7 +92,7 @@ function appendSpecializationAnchor(app, skillsDiv) {
     actionsB.appendChild(actionAnchor);
     skillItem.appendChild(actionsB);
 
-    const match = skillItem.querySelector("input.total")?.getAttribute("name").match(/^system\.skills\.([^\.]+)\.specialities\.([^\.]+)/);
+    const match = skillItem.querySelector("input.total")?.getAttribute("name")?.match(/^system\.skills\.([^\.]+)\.specialities\.([^\.]+)/);
     const skillKey = match[1];
     const specializationKey = match[2];
 
@@ -100,7 +101,7 @@ function appendSpecializationAnchor(app, skillsDiv) {
         name: "Edit Skill",
         icon: '<i class="fa-solid fa-pen-to-square"></i>',
         callback: () => {
-          app.actor.editSkill({skillKey, specializationKey});
+          app.actor.editSkill({ skillKey, specializationKey });
         },
       },
       {
@@ -111,6 +112,48 @@ function appendSpecializationAnchor(app, skillsDiv) {
         }),
         condition: !getCoreSkills().specialistSkills.get(skillKey)?.specialities[specializationKey],
       }
-    ], {eventName: "click"});
+    ], { eventName: "click" });
+  }
+}
+
+function appendSpecialistAnchor(app, skillsDiv) {
+  const specialistHeaders = skillsDiv.querySelectorAll(".items .flex.header");
+
+  for (const header of specialistHeaders) {
+    const input = header.nextElementSibling?.querySelector("input.total");
+    const nameAttr = input?.getAttribute("name");
+    
+    let skillKey = nameAttr?.match(/^system\.skills\.([^.]+)\./)?.[1];
+  
+    if (!skillKey) {
+      skillKey = Object.entries(app.actor.skills)
+        .find(([_, value]) => value.label === header.querySelector("b.name")?.textContent?.trim())?.[0] ?? null;
+    }
+  
+    if (!skillKey) return;
+
+    const actionsB = document.createElement("b");
+    actionsB.className = "dhe2e-skill-actions";
+
+    const actionAnchor = document.createElement("a");
+    actionAnchor.className = "fa-solid fa-ellipsis-vertical";
+
+    actionsB.appendChild(actionAnchor);
+    header.appendChild(actionsB);
+
+    ContextMenu.create(app, header, 'b.dhe2e-skill-actions', [
+      {
+        name: "Edit Skill",
+        icon: '<i class="fa-solid fa-pen-to-square"></i>',
+        callback: () => { app.actor.editSpecialist(skillKey) },
+      },
+      {
+        name: "Delete Skill",
+        icon: '<i class="fa-solid fa-trash"></i>',
+        callback: () => { app.actor.update({[`system.skills.-=${skillKey}`]: null})},
+        condition: !getCoreSkills().specialistSkills.has(skillKey),
+      }
+    ], { eventName: "click" });
+
   }
 }

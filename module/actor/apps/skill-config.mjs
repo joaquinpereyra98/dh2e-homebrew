@@ -188,7 +188,9 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
         context.buttonLabel = "Update Skill";
         break;
 
-      default:
+      case MODULE_CONST.CONFIG_TYPES.EDIT_SPECIALIST:
+        context.fields = this._prepareCommonFields();
+        context.buttonLabel = "Update Specialist";
         break;
     }
 
@@ -205,7 +207,6 @@ export default class SkillConfig extends api.HandlebarsApplicationMixin(api.Appl
       label: `${this.isSkill ? "Skill" : "Specialist"} Name`,
     }).outerHTML;
 
-    console.log(this.skillData.characteristics[0]);
     const characteristicsFormGroup = fields.createFormGroup({
       input: fields.createSelectInput({
         name: 'characteristics',

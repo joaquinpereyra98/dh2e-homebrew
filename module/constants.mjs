@@ -12,6 +12,7 @@ MODULE_CONST.CONFIG_TYPES = {
   SKILL: "skill",
   SPECIALIST: "specialist",
   EDIT_SKILL: "editSkill",
+  EDIT_SPECIALIST: "editSpecialist"
 }
 
 /*------------------------------------------------------ */
@@ -121,5 +122,7 @@ MODULE_CONST.defaultSpecialization = {
 }
 
 
-Object.freeze(MODULE_CONST);
+for ( const c of Object.values(MODULE_CONST) ) {
+  Object.freeze(c);
+}
 export default MODULE_CONST;

@@ -6,6 +6,7 @@
       flex-grow: 1;
       font-size: 12px;
       line-height: 16px;
+
       #context-menu {
         right: 100%;
         left: auto;
@@ -14,15 +15,23 @@
     }
   }
 
-  .items .dhe2e-skill-actions {
-    margin-right: 5px;
-    #context-menu {
-      right: 100%;
-      left: auto;
-      cursor: pointer;
-      i {
-        font-size: 12px;
+  .items {
+    .dhe2e-skill-actions {
+      margin-right: 5px;
+
+      #context-menu {
+        right: 100%;
+        left: auto;
+        cursor: pointer;
+
+        i {
+          font-size: 12px;
+        }
       }
+    }
+
+    .flex.header {
+      justify-content: space-between;
     }
   }
 }
