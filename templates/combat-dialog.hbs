@@ -1,0 +1,82 @@
+<form class="dark-heresy dialog">
+    <div class="flex row wrap background border" style="flex-basis: 100%;margin-bottom: 5px">        
+        <h1>{{localize name}}</h1>
+        {{#unless weapon.traits.skipAttackRoll}}
+            <div class="wrapper">
+                <label>{{localize "DIALOG.TARGET"}}</label>
+                <input name="target.base" type="number" value="{{target.base}}" data-dtype="Number"/>
+            </div>
+            <div class="wrapper">
+                <label>{{localize "DIALOG.MODIFIER"}}</label>
+                <input name="target.modifier" type="text" value="{{target.modifier}}" data-dtype="Number"/>
+            </div>
+            <div class="wrapper">
+                <label>{{localize "DIALOG.AIM"}}</label>
+                <select name="aim.val" data-dtype="Number">
+                    {{selectOptions (config "aimModes") selected=aim localize=true}}
+                </select>
+            </div>
+            {{#if weapon.isMelee}}
+            <div class="wrapper">
+                <label>{{localize "DIALOG.ATTACK_TYPE"}}</label>
+                <select name="attackType.name">
+                    {{selectOptions (config "attackTypeMelee") selected=attackType localize=true}}
+                </select>
+            </div>
+            {{/if}}
+            {{#if weapon.isRange}}
+            <div class="wrapper">
+                <label>{{localize "DIALOG.RANGE"}}</label>
+                <select name="range" data-dtype="Number">
+                    {{selectOptions (config "ranges") selected=rangeMod localize=true}}
+                </select>
+            </div>
+            <div class="wrapper">
+                <label>{{localize "DIALOG.ATTACK_TYPE"}}</label>
+                <select name="attackType.name">
+                    {{selectOptions (config "attackTypeRanged") selected=attackType.name localize=true}}
+                </select>
+            </div>
+            {{/if}}
+            <div class="separator"></div>
+        {{/unless}}
+
+        <div class="wrapper">
+            <label>{{localize "DIALOG.DAMAGE"}}</label>
+            <input name="weapon.damageFormula.itemDamage" type="text" value="{{weapon.damageFormula.itemDamage}}"/>
+        </div>
+        <div class="wrapper">
+            <label>Damage Attr. Bonus</label>
+            <select name="weapon.damageFormula.attribute">
+                    {{selectOptions characteristicOptions selected=weapon.damageFormula.attribute localize=true}}
+                </select>
+        </div>
+
+        <div class="wrapper">
+            <label>{{localize "DIALOG.TYPE"}}</label>
+            <select name="weapon.damageType">
+                {{selectOptions (config "damageTypes") selected=weapon.damageType localize=true}}
+            </select>
+        </div>
+        <div class="wrapper">
+            <label>{{localize "DIALOG.BONUS"}}</label>
+            <input name="weapon.damageBonus" type="number" value="{{weapon.damageBonus}}" data-dtype="Number"/>
+        </div>
+        <div class="wrapper">
+            <label>{{localize "DIALOG.PENETRATION"}}</label>
+            <input name="weapon.penetration" type="text" value="{{weapon.penetrationFormula}}" />
+        </div>
+    </div>
+    <div>
+        {{#if weapon.isRange}}
+            <div class="wrapper">
+                <table>
+                <tr>
+                <td style="padding:0 10px 0 10px;"><b>{{localize "DIALOG.CLIP"}}: </b>{{weapon.clip.value}}</td>
+                <td style="padding:0 10px 0 10px;"><b>RoF: </b>1/{{#if weapon.rateOfFire.burst}}{{weapon.rateOfFire.burst}}{{else}}-{{/if}}/{{#if weapon.rateOfFire.full}}{{weapon.rateOfFire.full}}{{else}}-{{/if}}</td>
+                </tr>
+                </table>
+            </div>
+        {{/if}}
+    </div>
+</form>
