@@ -42,3 +42,7 @@
   }
 
 }
+
+.dark-heresy .stats .skills .flex.row {
+  overflow-x: auto;
+}
